@@ -4,9 +4,9 @@ public class Earthquake {
 
     private double mEarthquakeMagnitude;
     private String mEarthquakeLocation;
-    private String mEarthquakeDate;
+    private long mEarthquakeDate;
 
-    public Earthquake(double earthquakeMagnitude, String earthquakeLocation, String earthquakeDate) {
+    public Earthquake(double earthquakeMagnitude, String earthquakeLocation, long earthquakeDate) {
         this.mEarthquakeMagnitude = earthquakeMagnitude;
         this.mEarthquakeLocation = earthquakeLocation;
         this.mEarthquakeDate = earthquakeDate;
@@ -15,7 +15,7 @@ public class Earthquake {
     public Earthquake() {
         this.mEarthquakeMagnitude = 0.0;
         this.mEarthquakeLocation = "";
-        this.mEarthquakeDate = "";
+        this.mEarthquakeDate = 11111111;
     }
 
     public void setEarthquakeMagnitude(double earthquakeMagnitude) {
@@ -26,7 +26,7 @@ public class Earthquake {
         this.mEarthquakeLocation = earthquakeLocation;
     }
 
-    public void setEarthquakeDate(String earthquakeDate) {
+    public void setEarthquakeDate(long earthquakeDate) {
         this.mEarthquakeDate = earthquakeDate;
     }
 
@@ -38,7 +38,7 @@ public class Earthquake {
         return mEarthquakeLocation;
     }
 
-    public String getEarthquakeDate() {
+    public long getEarthquakeDate() {
         return mEarthquakeDate;
     }
 
