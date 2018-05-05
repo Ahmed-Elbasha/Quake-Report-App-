@@ -5,17 +5,20 @@ public class Earthquake {
     private double mEarthquakeMagnitude;
     private String mEarthquakeLocation;
     private long mEarthquakeDate;
+    private String mEarthquakeDetailUrl;
 
-    public Earthquake(double earthquakeMagnitude, String earthquakeLocation, long earthquakeDate) {
-        this.mEarthquakeMagnitude = earthquakeMagnitude;
-        this.mEarthquakeLocation = earthquakeLocation;
-        this.mEarthquakeDate = earthquakeDate;
+    public Earthquake(double earthquakeMagnitude, String earthquakeLocation, long earthquakeDate, String earthquakeDetailUrl) {
+        mEarthquakeMagnitude = earthquakeMagnitude;
+        mEarthquakeLocation = earthquakeLocation;
+        mEarthquakeDate = earthquakeDate;
+        mEarthquakeDetailUrl = earthquakeDetailUrl;
     }
 
     public Earthquake() {
-        this.mEarthquakeMagnitude = 0.0;
-        this.mEarthquakeLocation = "";
-        this.mEarthquakeDate = 11111111;
+        mEarthquakeMagnitude = 0.0;
+        mEarthquakeLocation = "";
+        mEarthquakeDate = 11111111;
+        mEarthquakeDetailUrl = "";
     }
 
     public void setEarthquakeMagnitude(double earthquakeMagnitude) {
@@ -30,6 +33,10 @@ public class Earthquake {
         this.mEarthquakeDate = earthquakeDate;
     }
 
+    public void setEarthquakeDetailUrl(String earthquakeDetailUrl) {
+        mEarthquakeDetailUrl = earthquakeDetailUrl;
+    }
+
     public double getEarthquakeMagnitude() {
         return mEarthquakeMagnitude;
     }
@@ -40,6 +47,10 @@ public class Earthquake {
 
     public long getEarthquakeDate() {
         return mEarthquakeDate;
+    }
+
+    public String getEarthquakeDetailUrl() {
+        return mEarthquakeDetailUrl;
     }
 
     @Override

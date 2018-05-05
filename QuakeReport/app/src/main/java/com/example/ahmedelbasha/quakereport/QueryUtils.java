@@ -57,8 +57,9 @@ public final class QueryUtils {
                 double earthquakeMagnitude = featureProperties.optDouble("mag");
                 String earthquakeLocation = featureProperties.optString("place");
                 long earthquakeTime = featureProperties.optLong("time");
+                String earthquakeUrl = featureProperties.optString("url");
 
-                earthquakes.add(new Earthquake(earthquakeMagnitude, earthquakeLocation, earthquakeTime));
+                earthquakes.add(new Earthquake(earthquakeMagnitude, earthquakeLocation, earthquakeTime, earthquakeUrl));
             }
 
 
