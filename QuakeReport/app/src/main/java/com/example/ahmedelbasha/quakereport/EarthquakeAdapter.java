@@ -15,6 +15,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import android.graphics.drawable.GradientDrawable;
 
 public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
@@ -25,7 +27,7 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
      * @param context  The current context.
      * @param earthquakes  The objects to represent in the ListView.
      */
-    public EarthquakeAdapter(@NonNull Context context, @NonNull ArrayList<Earthquake> earthquakes) {
+    public EarthquakeAdapter(@NonNull Context context, @NonNull List<Earthquake> earthquakes) {
         super(context, 0, earthquakes);
     }
 
