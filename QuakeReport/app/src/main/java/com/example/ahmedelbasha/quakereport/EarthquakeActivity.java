@@ -19,10 +19,12 @@ import java.util.List;
 
 public class EarthquakeActivity extends AppCompatActivity {
 
-    public static final String LOG_TAG = EarthquakeActivity.class.getName();
-    /** URL for earthquake data from the USGS dataset */
-    private static final String USGS_REQUEST_URL =
-            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
+    private static final String LOG_TAG = EarthquakeActivity.class.getName();
+
+        /** URL for earthquake data from the USGS dataset */
+         private static final String USGS_REQUEST_URL =
+                "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
+    /** Adapter for the list of earthquakes */
     private EarthquakeAdapter mAdapter;
 
     @Override
@@ -56,8 +58,9 @@ public class EarthquakeActivity extends AppCompatActivity {
             }
         });
 
-        EarthquakeListAsyncTask earthquakeListAsyncTask = new EarthquakeListAsyncTask();
-        earthquakeListAsyncTask.execute(USGS_REQUEST_URL);
+        // Start the AsyncTask to fetch the earthquake data
+        EarthquakeAsyncTask task = new EarthquakeAsyncTask();
+        task.execute(USGS_REQUEST_URL);
     }
 
     private void showEarthquakeDetailUrl(String earthquakeDetailUrl) {
@@ -83,16 +86,11 @@ public class EarthquakeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateUI(List<Earthquake> earthquakeList) {
-
-
-    }
-
-    private class EarthquakeListAsyncTask extends AsyncTask<String, Void, List<Earthquake>> {
+    private class EarthquakeAsyncTask extends AsyncTask<String, Void, List<Earthquake>> {
 
         @Override
         protected List<Earthquake> doInBackground(String... urls) {
-            if (urls.length < 1 && urls[0] != null) {
+            if (urls.length < 1 || urls[0] == null) {
                 return null;
             }
 

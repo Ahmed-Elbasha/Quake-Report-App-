@@ -1,5 +1,6 @@
 package com.example.ahmedelbasha.quakereport;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -85,7 +86,7 @@ public final class QueryUtils {
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setReadTimeout(10000 /* milliseconds */);
-            urlConnection.setConnectTimeout(15000 /* milliseconds */);
+            urlConnection.setConnectTimeout(10000 /* milliseconds */);
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
@@ -95,7 +96,9 @@ public final class QueryUtils {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
             } else {
-                Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
+                Log.e(LOG_TAG, "Error respon{\n" +
+                        "                Log.e(LOG_TAG, \"Error response code: \" + urlConnection.getResponseCode());\n" +
+                        "            }se code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", e);
@@ -137,7 +140,7 @@ public final class QueryUtils {
      */
     private static List<Earthquake> extractFeatureFromJson(String earthquakeJSON) {
         // If the JSON string is empty or null, then return early.
-        if (TextUtils.isText(earthquakeJSON)) {
+        if (TextUtils.isEmpty(earthquakeJSON)) {
             return null;
         }
 
