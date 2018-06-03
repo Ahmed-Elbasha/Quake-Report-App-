@@ -21,6 +21,7 @@ import android.graphics.drawable.GradientDrawable;
 
 public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
     private static final String LOCATION_SEPARATOR = " of ";
+    private List<Earthquake> earthquakeList = new ArrayList<>();
     /**
      * Constructor
      *
@@ -29,6 +30,7 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
      */
     public EarthquakeAdapter(@NonNull Context context, @NonNull List<Earthquake> earthquakes) {
         super(context, 0, earthquakes);
+        this.earthquakeList = earthquakes;
     }
 
     @NonNull
@@ -192,5 +194,10 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
 
         }
         return ContextCompat.getColor(getContext(), magnitudeColor);
+    }
+
+    public void setEarthquakeList(List<Earthquake> data) {
+        data.addAll(data);
+        notifyDataSetChanged();
     }
 }

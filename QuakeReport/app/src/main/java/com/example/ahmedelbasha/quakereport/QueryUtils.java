@@ -74,6 +74,7 @@ public final class QueryUtils {
      * Make an HTTP request to the given URL and return a String as the response.
      */
     private static String makeHttpRequest(URL url) throws IOException {
+        Log.d(LOG_TAG, "makeHttpRequest() is called.");
         String jsonResponse = "";
 
         // If the URL is null, then return early.
@@ -85,8 +86,8 @@ public final class QueryUtils {
         InputStream inputStream = null;
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setReadTimeout(10000 /* milliseconds */);
-            urlConnection.setConnectTimeout(10000 /* milliseconds */);
+            urlConnection.setReadTimeout(400000 /* milliseconds */);
+            urlConnection.setConnectTimeout(400000 /* milliseconds */);
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 

@@ -1,38 +1,43 @@
 package com.example.ahmedelbasha.quakereport;
 
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.app.LoaderManager;
+import android.app.LoaderManager.LoaderCallbacks;
+
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
+import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarthquakeActivity extends AppCompatActivity {
+public class EarthquakeActivity extends AppCompatActivity implements LoaderCallbacks<List<Earthquake>> {
 
-    private static final String LOG_TAG = EarthquakeActivity.class.getName();
-
-        /** URL for earthquake data from the USGS dataset */
-         private static final String USGS_REQUEST_URL =
-                "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
-    /** Adapter for the list of earthquakes */
+    private static final String USGS_REQUEST_URL =
+            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
+    private static final int EARTHQUAKE_LOADER_ID = 1;
     private EarthquakeAdapter mAdapter;
-
+    private static final String LOG_TAG = EarthquakeActivity.class.getName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
-
-
 
 
         // Find a reference to the {@link ListView} in the layout
@@ -53,14 +58,14 @@ public class EarthquakeActivity extends AppCompatActivity {
                 if (currentEarthquake != null) {
                     earthquakeDetailUrl = currentEarthquake.getEarthquakeDetailUrl();
                 }
-
                 showEarthquakeDetailUrl(earthquakeDetailUrl);
             }
         });
 
-        // Start the AsyncTask to fetch the earthquake data
-        EarthquakeAsyncTask task = new EarthquakeAsyncTask();
-        task.execute(USGS_REQUEST_URL);
+        LoaderManager loaderManager = getLoaderManager();
+        loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
+
+        Log.d(LOG_TAG, "initLoader() is called");
     }
 
     private void showEarthquakeDetailUrl(String earthquakeDetailUrl) {
@@ -86,31 +91,28 @@ public class EarthquakeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class EarthquakeAsyncTask extends AsyncTask<String, Void, List<Earthquake>> {
+    @NonNull
+    @Override
+    public Loader<List<Earthquake>> onCreateLoader(int id, @Nullable Bundle args) {
+        Log.d(LOG_TAG, "onCreateLoader() is called.");
+        return new EarthquakeLoader(this, USGS_REQUEST_URL);
+    }
 
-        @Override
-        protected List<Earthquake> doInBackground(String... urls) {
-            if (urls.length < 1 || urls[0] == null) {
-                return null;
-            }
-
-            List<Earthquake> earthquakeList = QueryUtils.fetchEarthquakeData(urls[0]);
-            return earthquakeList;
-        }
-
-        @Override
-        protected void onPostExecute(List<Earthquake> data) {
-            if (data != null || !data.isEmpty()) {
-                mAdapter.addAll(data);
-            }
-            // Clear the adapter from previous earthquake data.
-            mAdapter.clear();
-
-            // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
-            // data set. This will trigger the ListView to update.
-            if (data != null || !data.isEmpty()) {
-                mAdapter.addAll(data);
-            }
+    @Override
+    public void onLoadFinished(android.content.Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+        Log.d(LOG_TAG, "onLoadFinished() is called.");
+        mAdapter.clear();
+        // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
+        // data set. This will trigger the ListView to update.
+        if (earthquakes != null && !earthquakes.isEmpty()) {
+            mAdapter.addAll(earthquakes);
         }
     }
+
+    @Override
+    public void onLoaderReset(android.content.Loader<List<Earthquake>> loader) {
+        Log.d(LOG_TAG, "onLoaderReset() is called.");
+        mAdapter.clear();
+    }
+
 }
