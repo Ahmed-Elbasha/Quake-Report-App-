@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,6 +38,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
     private EarthquakeAdapter mAdapter;
     private static final String LOG_TAG = EarthquakeActivity.class.getName();
     private TextView mEmptyStateTextView;
+    private ProgressBar loadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,8 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
         earthquakeListView.setEmptyView(mEmptyStateTextView);
 
         Log.d(LOG_TAG, "initLoader() is called");
+
+        loadingIndicator = findViewById(R.id.loading_idicator);
     }
 
     private void showEarthquakeDetailUrl(String earthquakeDetailUrl) {
@@ -108,13 +112,19 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
     @Override
     public void onLoadFinished(android.content.Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
         Log.d(LOG_TAG, "onLoadFinished() is called.");
-        mEmptyStateTextView.setText(R.string.no_earthquakes);
         mAdapter.clear();
         // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.
 
         if (earthquakes != null && !earthquakes.isEmpty()) {
             mAdapter.addAll(earthquakes);
+
+            if (!(earthquakes.size() != 0)) {
+                loadingIndicator.setVisibility(View.GONE);
+            } else {
+                mEmptyStateTextView.setText(R.string.no_earthquakes);
+                loadingIndicator.setVisibility(View.GONE);
+            }
         }
     }
 
