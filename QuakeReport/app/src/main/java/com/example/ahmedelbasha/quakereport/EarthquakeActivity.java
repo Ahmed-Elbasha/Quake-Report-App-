@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -69,14 +71,30 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
             }
         });
 
-        LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
+
 
         earthquakeListView.setEmptyView(mEmptyStateTextView);
 
         Log.d(LOG_TAG, "initLoader() is called");
 
         loadingIndicator = findViewById(R.id.loading_idicator);
+
+        // Check For Internet Connectivity.
+
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) EarthquakeActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if ((activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting()) &&
+                (activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI || activeNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE ||
+                activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIMAX || activeNetworkInfo.getType() == ConnectivityManager.TYPE_VPN)) {
+            LoaderManager loaderManager = getLoaderManager();
+            loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
+        } else {
+            loadingIndicator.setVisibility(View.GONE);
+            mEmptyStateTextView.setText("No internet connection");
+        }
     }
 
     private void showEarthquakeDetailUrl(String earthquakeDetailUrl) {
