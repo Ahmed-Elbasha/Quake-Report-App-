@@ -3,10 +3,12 @@ package com.example.ahmedelbasha.quakereport;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.app.LoaderManager;
@@ -18,6 +20,7 @@ import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,14 +31,14 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EarthquakeActivity extends AppCompatActivity implements LoaderCallbacks<List<Earthquake>> {
 
-    private static final String USGS_REQUEST_URL =
-            "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=5&limit=10";
+    private static final String USGS_REQUEST_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query";
     private static final int EARTHQUAKE_LOADER_ID = 1;
     private EarthquakeAdapter mAdapter;
     private static final String LOG_TAG = EarthquakeActivity.class.getName();
@@ -105,26 +108,46 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
     // navigating to parent activity with possibility to be navigating back from another app's activity.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                Intent upIntent = NavUtils.getParentActivityIntent(this);
-                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-                    TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
-                } else {
-                    NavUtils.navigateUpTo(this, upIntent);
-                }
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            Intent settingsintent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsintent);
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
     @NonNull
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int id, @Nullable Bundle args) {
-        Log.d(LOG_TAG, "onCreateLoader() is called.");
-        return new EarthquakeLoader(this, USGS_REQUEST_URL);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String minMagnitude = sharedPreferences.getString(getString(R.string.settings_min_magnitude_key),
+                getString(R.string.settings_min_magnitude_default));
+
+        String orderBy = sharedPreferences.getString(getString(R.string.settings_order_by_key),
+                getString(R.string.settings_order_by_default));
+
+        Uri baseUri = Uri.parse(USGS_REQUEST_URL);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+
+        uriBuilder.appendQueryParameter("format", "geojson");
+//        uriBuilder.appendQueryParameter("limit", "10");
+        uriBuilder.appendQueryParameter("minmag", minMagnitude);
+        uriBuilder.appendQueryParameter("orderby", orderBy);
+
+        return new EarthquakeLoader(this, uriBuilder.toString());
     }
 
     @Override
@@ -137,7 +160,7 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderCallb
         if (earthquakes != null && !earthquakes.isEmpty()) {
             mAdapter.addAll(earthquakes);
 
-            if (!(earthquakes.size() != 0)) {
+            if ((earthquakes.size() != 0)) {
                 loadingIndicator.setVisibility(View.GONE);
             } else {
                 mEmptyStateTextView.setText(R.string.no_earthquakes);

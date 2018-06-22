@@ -36,10 +36,9 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View listItemView = convertView;
 
-        if (listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
         }
 
         Earthquake currentEarthquake = getItem(position);
@@ -47,7 +46,7 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         double earthquakeMagnitude = currentEarthquake.getEarthquakeMagnitude();
         String formattedMagnitude = formatMagnitude(earthquakeMagnitude);
 
-        TextView magnitudeTextView = listItemView.findViewById(R.id.magnitude_text_view);
+        TextView magnitudeTextView = convertView.findViewById(R.id.magnitude_text_view);
         magnitudeTextView.setText(formattedMagnitude);
 
         // Set the proper background color on the magnitude circle.
@@ -63,10 +62,10 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         String earthquakeOriginalLocation = currentEarthquake.getEarthquakeLocation();
 
         // this code is corresponding to my solution.
-        TextView locationOffsetTextView = listItemView.findViewById(R.id.location_offset_text_view);
+        TextView locationOffsetTextView = convertView.findViewById(R.id.location_offset_text_view);
         locationOffsetTextView.setText(setLocationOffsetValue(earthquakeOriginalLocation));
 
-        TextView locationTextView = listItemView.findViewById(R.id.primary_location_text_view);
+        TextView locationTextView = convertView.findViewById(R.id.primary_location_text_view);
         locationTextView.setText(setPrimaryLocationValue(earthquakeOriginalLocation));
 
         // and this is how Google Developers fixed the issue.
@@ -92,15 +91,15 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
 
         String formattedDate = formatDate(dateObject);
 
-        TextView dateTextView = listItemView.findViewById(R.id.date_text_view);
+        TextView dateTextView = convertView.findViewById(R.id.date_text_view);
         dateTextView.setText(formattedDate);
 
         String formattedTime = formatTime(dateObject);
 
-        TextView timeTextView = listItemView.findViewById(R.id.time_text_view);
+        TextView timeTextView = convertView.findViewById(R.id.time_text_view);
         timeTextView.setText(formattedTime);
 
-        return listItemView;
+        return convertView;
     }
 
     /**
